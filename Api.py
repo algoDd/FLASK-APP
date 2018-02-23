@@ -121,8 +121,8 @@ def get_using_self():
     return jsonpin
 @app.route('/get_place',methods=['GET'])
 def get_place():
-        lng1=77.2167
-	lat1=28.6333
+	lat1=float(request.args['latitude'])
+	lng1=float(request.args['longitude'])
 	c=0
 	sql = text('Select name , type , parent , coordinates from geojson')
 	result = db.engine.execute(sql)
