@@ -119,7 +119,68 @@ def get_using_self():
     pin=pin[d<(5)]
     jsonpin=json.dumps(str(pin))
     return jsonpin
+@app.route('/get_place',methods=['GET'])
+def get_place():
+        lng1=77.2167
+	lat1=28.6333
+	c=0
+	sql = text('Select name , type , parent , coordinates from geojson')
+	result = db.engine.execute(sql)
+	name=[]
+	typ=[]
+	parents=[]
+	coordinates=[]
+	for row in result:
+	    name.append(row[0])
+	    typ.append(row[1])
+ 	    parents.append(row[2])
+ 	    coordinates.append(row[3])
+    	def quadrant(w,lng1,lat1):
+       		lng=w[:,0]
+        	lat=w[:,1]
+        	lenlat=np.median(lat,axis=0)
+        	lenlng=np.median(lng,axis=0)
+       	 	for i in range(1):
+            		if lng1<=lenlng and lat1>=lenlat:
+                #print '1st'
+                		lng=lng[lng<=lenlng]
+                		lat=lat[lat>=lenlat]
+            		elif lng1>=lenlng and lat1>=lenlat:
+                #print '2nd'
+              			lng=lng[lng>=lenlng]
+                		lat=lat[lat>=lenlat]
+            		elif lng1<=lenlng and lat1<=lenlat:
+                #print '3rd'
+                		lng=lng[lng<=lenlng]
+                		lat=lat[lat<=lenlat]
+            		elif lng1>=lenlng and lat1<=lenlat:
+                		lng=lng[lng>=lenlng]
+                		lat=lat[lat<=lenlat]
+                #print '4th'
+            	return lng , lat
+    
+    	for i in range(len(name)):
+     		   q=coordinates[i]
+     		   w=np.matrix(q[0])
+     		   lng,lat=quadrant(w,lng1,lat1)
+     		   if c>1:
+     			       lng,lat=quadrant(w,lng1,lat1)
+      			       c=c-1
+       		   xmax=lng.max()
+       		   xmin=lng.min()
+       		   ymax=lat.max()
+       		   ymin=lat.min()
+    #print xmax,xmin,ymin,ymax
+       		   if(lng1<=xmax and lng1>=xmin and lat1<=ymax and lat1>=ymin):
+       			     found=name[i]
+          		     c=c+1
+	if len(found)>0:
+ 	   return found
+	else:
+ 	   return 'Not Found'
+    
+    
 
 if __name__ == '__main__':
-    app.run(port=5000)#for debugging debug=True
+    app.run(port=5000,debug=True)#for debugging debug=True
 
