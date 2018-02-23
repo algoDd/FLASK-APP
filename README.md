@@ -12,5 +12,5 @@ http://127.0.0.1:5000/get_using_postgres?latitude=&longitude=
 API 2 (GET 2) :
 http://127.0.0.1:5000/get_using_self?latitude=&longitude=
 
-Api3 (GET) :
+API3 (GET) :
 http://127.0.0.1:5000/get_place?latitude=28.6333&longitude=77.2167
