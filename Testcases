@@ -1,0 +1,79 @@
+
+Testcases :
+
+	API 1 (POST) : /post_location
+		http://127.0.0.1:5000/post_location
+		Expected Json 
+		{ "pin": "", "place_name": "", "admin_name": "", "latitude": "", "longitude": "" }
+
+		Case1-http://127.0.0.1:5000/post_location
+
+		Json: { "pin": "110085", "place_name": "Rohini", "admin_name": "Delhi", "latitude": "28.749472", "longitude": "77.056533" }
+
+		result: Data Saved
+
+		case2-http://127.0.0.1:5000/post_location
+
+		Json: { "pin": "110085", "place_name": "Rohini", "admin_name": "Delhi", "latitude": "28.749472", "longitude": "77.056533" }
+
+		result: Data Exist
+
+
+	API 2 (GET 1) : /get_using_postgres
+		http://127.0.0.1:5000/get_using_postgres?latitude=&longitude=
+		Case1: /get_using_postgres?latitude=28.749472&longitude=77.056533
+
+		result : ["IN/110039", "110085"]
+
+		Case2: /get_using_postgres?latitude=28.749472&longitude=
+
+		result : Please Specify Arguments Correctly
+
+		Case2: /get_using_postgres?latitude=&longitude=77.056533
+
+		result : Please Specify Arguments Correctly
+
+	
+	API 3 (GET 2) : /get_using_self
+		http://127.0.0.1:5000/get_using_self?latitude=&longitude=
+
+		Case1: /get_using_self?latitude=28.749472&longitude=77.056533
+
+		result : "[['IN/110039' '110085']]"
+
+		Case2: /get_using_self?latitude=28.749472&longitude=
+
+		result : Please Specify Arguments Correctly
+
+		Case2: /get_using_self?latitude=&longitude=77.056533
+
+		result : Please Specify Arguments Correctly
+
+
+	API 4 (GET 3) : /get_place
+		
+		case1 - http://12h7.0.0.1:5000/get_place?latitude=28.6333&longitude=77.2167
+
+                result- Central Delhi
+
+                case2 - http://127.0.0.1:5000/get_place?latitude=18.95370063230706&longitude=72.9316234588623
+
+		result- Elephanta Island
+
+		case3 - /get_place?latitude=28.459497&longitude=77.026638
+		
+		result - Gurgaon
+
+		case5 - http://127.0.0.1:5000/get_place?latitude=18.95370063230706&longitude=
+
+		result- Please Specify Arguments Correctly
+
+		case6 - http://127.0.0.1:5000/get_place?latitude=3747234&longitude=78237826
+
+		result- Not Found
+		
+		case 7-	/get_place?latitude=28.501583179858873&longitude=77.45361328125
+
+		result-	Greater Noida
+
+

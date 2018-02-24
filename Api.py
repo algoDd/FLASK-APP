@@ -12,15 +12,14 @@ import math
 from sqlalchemy import text
 import numpy as np
 import json
-
+from app import create_app
 
 # In[2]:
 
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/apitest'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+config_name ="development" # config_name = "development"
+app = create_app(config_name)
+# In[2]:
 
 # @app.route('/post_location', methods=['POST'])
 # def post_location():
@@ -28,8 +27,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 #   
 
 # In[3]:
-
-
 db = SQLAlchemy(app)
 class location(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -54,11 +51,11 @@ def show_all():
 @app.route('/post_location',methods=['POST'])
 def post_location():
     req_data = request.get_json()
-    pin = req_data['pin']
-    place_name = req_data['place_name']
-    admin_name = req_data['admin_name']
     latitude = req_data['latitude']
+    admin_name = req_data['admin_name']
     longitude = req_data['longitude']
+    pin = req_data["pin"]
+    place_name = req_data['place_name']
     if(pin=="" or place_name=="" or admin_name=="" or latitude=="" or longitude==""):
         return'Please Fill All Details'
     else:
@@ -75,8 +72,11 @@ def post_location():
 
 @app.route('/get_using_postgres',methods=['GET'])
 def get_using_postgres():
-    longitude=request.args['longitude']
-    latitude=request.args['latitude']
+    if len(request.args.get('latitude'))==0 or len(request.args.get('longitude'))==0:
+	return 'Please Specify Arguments Correctly' 
+    else:
+	longitude=request.args['longitude']
+    	latitude=request.args['latitude']
     radius= 5000
     sql = text('select pin from location WHERE earth_box(ll_to_earth('+latitude+","+longitude+'),5000.0) @> ll_to_earth(location.latitude, location.longitude)')
     result = db.engine.execute(sql)
@@ -91,8 +91,11 @@ def get_using_postgres():
 @app.route('/get_using_self',methods=['GET'])
 def get_using_self():
     #haversine formula
-    lat=float(request.args['latitude'])
-    lng=float(request.args['longitude'])
+    if len(request.args.get('latitude'))==0 or len(request.args.get('longitude'))==0:
+	return 'Please Specify Arguments Correctly' 
+    else:
+    	lat=float(request.args['latitude'])
+    	lng=float(request.args['longitude'])
     radiusOfEarth = 6371
     latitude=[]
     longitude=[]
@@ -121,8 +124,11 @@ def get_using_self():
     return jsonpin
 @app.route('/get_place',methods=['GET'])
 def get_place():
-	lat1=float(request.args['latitude'])
-	lng1=float(request.args['longitude'])
+        if len(request.args.get('latitude'))==0 or len(request.args.get('longitude'))==0:
+		return 'Please Specify Arguments Correctly' 
+	else:
+		lat1=float(request.args.get('latitude'))
+		lng1=float(request.args.get('longitude'))
 	c=0
 	sql = text('Select name , type , parent , coordinates from geojson')
 	result = db.engine.execute(sql)
@@ -130,6 +136,7 @@ def get_place():
 	typ=[]
 	parents=[]
 	coordinates=[]
+	found=""
 	for row in result:
 	    name.append(row[0])
 	    typ.append(row[1])
@@ -170,10 +177,10 @@ def get_place():
        		   xmin=lng.min()
        		   ymax=lat.max()
        		   ymin=lat.min()
-    #print xmax,xmin,ymin,ymax
        		   if(lng1<=xmax and lng1>=xmin and lat1<=ymax and lat1>=ymin):
        			     found=name[i]
           		     c=c+1
+		  
 	if len(found)>0:
  	   return found
 	else:
