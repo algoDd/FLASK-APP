@@ -16,8 +16,8 @@ Flask
 
 #### (POST)
 - http://127.0.0.1:5000/post_location
-- Expected Json :
-{ "pin": "", "place_name": "", "admin_name": "", "latitude": "", "longitude": "" }
+  - Expected Json :
+  { "pin": "", "place_name": "", "admin_name": "", "latitude": "", "longitude": "" }
 
 #### (Get)
 - http://127.0.0.1:5000/get_using_postgres?latitude=&longitude=
