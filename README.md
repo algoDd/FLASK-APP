@@ -16,7 +16,7 @@ Flask
 
 #### (POST)
 - http://127.0.0.1:5000/post_location
-Expected Json :
+- Expected Json :
 { "pin": "", "place_name": "", "admin_name": "", "latitude": "", "longitude": "" }
 
 #### (Get)
